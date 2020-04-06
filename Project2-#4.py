@@ -25,7 +25,7 @@ class DirectedGraph():
         if is_valid:
             self.graph_dict[vert1].append(vert2)
 
-    def itervalues(self,d, **kwargs): #**kw mean It's an empty dictionary.
+    def itervalues(self,d, **kwargs): # **kwargs allows you to pass keyworded variable length of arguments to a function.
         return iter(d.values(**kwargs))
 
     #Returns a list of all nodes in the graph with no dependencies. Used to validate DAG
@@ -42,26 +42,26 @@ class DirectedGraph():
     def topological_sort(self, graph):
 
         in_degree = {}
-        for u in graph:
-            in_degree[u] = 0
+        for nodes in graph:
+            in_degree[nodes] = 0
 
-        for u in graph:
-            for v in graph[u]:
-                in_degree[v] += 1
+        for nodes in graph:
+            for edges in graph[nodes]:
+                in_degree[edges] += 1
 
         queue = deque()
-        for u in in_degree:
-            if in_degree[u] == 0:
-                queue.appendleft(u)
+        for nodes in in_degree:
+            if in_degree[nodes] == 0:
+                queue.appendleft(nodes)
 
         l = []
         while queue:
-            u = queue.pop()
-            l.append(u)
-            for v in graph[u]:
-                in_degree[v] -= 1
-                if in_degree[v] == 0:
-                    queue.appendleft(v)
+            nodes = queue.pop()
+            l.append(nodes)
+            for edges in graph[nodes]:
+                in_degree[edges] -= 1
+                if in_degree[edges] == 0:
+                    queue.appendleft(edges)
 
         if len(l) == len(graph):
             return l
@@ -98,19 +98,19 @@ class Main():
     def createRandomDAGIter(n):
         graph = DirectedGraph()
         i=1
-        k=1
+        nodeVal=1
         graph.addNode(1)
-        while k<=n:
-            if k+1<=n:
-                graph.addNode(k+1)
-            if k+2<=n:
-                graph.addNode(k+2)
-            if k+3<=n:
-                graph.addNode(k+3)
+        while nodeVal<=n:
+            if nodeVal+1<=n:
+                graph.addNode(nodeVal+1)
+            if nodeVal+2<=n:
+                graph.addNode(nodeVal+2)
+            if nodeVal+3<=n:
+                graph.addNode(nodeVal+3)
             for l in range(3):
-                k = k + 1
-                if k<=n:
-                    graph.addDirectedEdge(i,k)
+                nodeVal = nodeVal + 1
+                if nodeVal<=n:
+                    graph.addDirectedEdge(i,nodeVal)
 
             i=i+1
         return graph
@@ -122,21 +122,21 @@ class TopSort():
     def Kahns(graph):
         Sorted_List = []
         ZeroInDegreeVertex = []
-        inDegree = {u: 0 for u in graph}
+        inDegree = {nodes: 0 for nodes in graph}
 
-        for u in graph:
-            for v in graph[u]:
-                inDegree[v] += 1
+        for nodes in graph:
+            for edges in graph[nodes]:
+                inDegree[edges] += 1
 
-        for k in inDegree:
-            if (inDegree[k] == 0):
-                ZeroInDegreeVertex.append(k)
+        for nodeVal in inDegree:
+            if (inDegree[nodeVal] == 0):
+                ZeroInDegreeVertex.append(nodeVal)
 
         while ZeroInDegreeVertex:
-            v = ZeroInDegreeVertex.pop(0)
-            Sorted_List.append(v)
+            edges = ZeroInDegreeVertex.pop(0)
+            Sorted_List.append(edges)
 
-            for neighbour in graph[v]:
+            for neighbour in graph[edges]:
                 inDegree[neighbour] -= 1
                 if (inDegree[neighbour] == 0):
                     ZeroInDegreeVertex.append(neighbour)
@@ -150,12 +150,12 @@ class TopSort():
 
         def dfs(vertex):
             state[vertex] = 0
-            for k in graph.get(vertex, ()):
-                sk = state.get(k, None)
+            for nodeVal in graph.get(vertex, ()):
+                sk = state.get(nodeVal, None)
                 if sk == 0: raise ValueError("cycle")
                 if sk == 1: continue
-                enter.discard(k)
-                dfs(k)
+                enter.discard(nodeVal)
+                dfs(nodeVal)
             order.appendleft(vertex)
             state[vertex] = 1
 
